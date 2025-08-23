@@ -46,7 +46,7 @@ Current version works from microSD card and do not require installation.
 
 * ~~TO DO - Wi-Fi configuration without cloud account~~
 * ~~TO DO - Blocking cloud hosts~~
-* TO DO - ~~Fix on webui ip retrive error~~, LED IR on/off button
+* TO DO - ~~Fix on webui ip retrive error~~, ~~LED IR on/off button~~
 * TO DO - Will be possible retrive a single current picture from the camera via webui ?
 
 ### 2025-05-21
@@ -83,10 +83,10 @@ Current version works from microSD card and do not require installation.
   
 
 ### 2025-08-23 [HC1703L_Hack_v0.3.zip](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.3.zip)
-* Fixed webui IR LEDs buttons (error on GPIO port, thanks to Electro-nic)   
-* Fixed webui oblique direction buttons (thanks to Pawol)
-* Added index.html redirecting to cgi-bin/webui (Pawol)
-* Added some hidden buttons to check some p2pcam function (via ip port 8001) and added White LEDs buttons (via GPIO 12) 
+* Fixed ```webui``` IR LEDs buttons (error on GPIO port, thanks to Electro-nic)   
+* Fixed ```webui``` oblique direction buttons (thanks to Pawol)
+* Added ```index.html``` redirecting to ```cgi-bin/webui``` (Pawol)
+* Added some hidden buttons to check ```p2pcam``` function (via ip port 8001) and added White LEDs buttons (via GPIO 12) 
 
 ## Additional info
 
