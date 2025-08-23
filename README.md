@@ -80,6 +80,13 @@ Current version works from microSD card and do not require installation.
 * ```wdk.sh``` is a simple Whatch Dog Kicker requested if you need to kill p2pcam and start.sh, this is not (yet) used by the hack.
 * Added some lines to hosts file to prevent communication with ```host.tange365.com```
 * Fixed webui ip retrive error
+  
+
+### 2025-08-23 [HC1703L_Hack_v0.3.zip](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.3.zip)
+* Fixed webui IR LEDs buttons (error on GPIO port, thanks to Electro-nic)   
+* Fixed webui oblique direction buttons (thanks to Pawol)
+* Added index.html redirecting to cgi-bin/webui (Pawol)
+* Added some hidden buttons to check some p2pcam function (via ip port 8001) and added White LEDs buttons (via GPIO 12) 
 
 ## Additional info
 
