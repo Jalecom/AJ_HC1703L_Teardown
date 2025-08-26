@@ -75,18 +75,18 @@ Current version works from microSD card and do not require installation.
   
 
 ### 2025-05-18 [HC1703L_Hack_v0.2.zip](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.2.zip)
-* ```wifi.sh``` can connect to your AccessPoint without clod account, i.e. without the need to expose the camera to the internet or to use the vendor app. Edit the last line of ```debug_cmd.sh``` with your credentials or call manually the script with SSID PWD from SSH 
+* `wifi.sh` can connect to your AccessPoint without cloud account, i.e. without the need to expose the camera to the internet or to use the vendor app. Edit the last line of `debug_cmd.sh` with your credentials or call manually the script with SSID PWD from SSH 
 * Removed the annoying voice WaitWifiConfig.wav
-* ```wdk.sh``` is a simple Whatch Dog Kicker requested if you need to kill p2pcam and start.sh, this is not (yet) used by the hack.
+* `wdk.sh` is a simple Whatch Dog Kicker, requested if you need to kill `p2pcam` and `start.sh`, this is not (yet) used by the hack.
 * Added some lines to hosts file to prevent communication with ```host.tange365.com```
 * Fixed webui ip retrive error
   
 
 ### 2025-08-23 [HC1703L_Hack_v0.3.zip](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.3.zip)
-* Fixed ```webui``` IR LEDs buttons (error on GPIO port, thanks to Electro-nic)   
-* Fixed ```webui``` oblique direction buttons (thanks to Pawol)
-* Added ```index.html``` redirecting to ```cgi-bin/webui``` (Pawol)
-* Added some hidden buttons to check ```p2pcam``` function (via ip port 8001) and added White LEDs buttons (via GPIO 12) 
+* Fixed `webui` IR LEDs buttons (error on GPIO port, thanks to Electro-nic)   
+* Fixed `webui` oblique direction buttons (thanks to Pawol)
+* Added `index.html` redirecting to `cgi-bin/webui` (Pawol)
+* Added hidden buttons to check some `p2pcam` function (via ip port 8001) and added White LEDs buttons (via GPIO 12) 
 
 ## Additional info
 
@@ -103,11 +103,11 @@ Current version works from microSD card and do not require installation.
 
 ### End of Startup process
 
-After the [boot process](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/AugentixFWboot_noSDcard.log), the camera retain the ```/home``` folder even after a powerdown, until the reset button is manually pressed.\
-the ```/bak``` folder is mounted as ReadOnly and retain all the files requested to startup including ```start.sh``` and ```p2pcam.sqfs```.\
-the ```/tmp``` folder is created at every boot and the ```start.sh``` is copied from ```/bak```; the one in ```/tmp``` is the one executed during the startup process. ```/mnt```, ```/var```, log and ini files are here.\
-the ```start.sh``` load some drivers, check if a ```firmware.bin``` or a ```debug_cmd.sh``` is on the SD card and upgrade or run it, then init the sensor, ptz, voice, wifi, call ```rsyscall.hc1703``` and finally mount ```/bak/p2pcam.sqfs``` to run the p2pcam (closed source bineary), wich control all the higher function of the camera and try to connect with the cloud.\
-the ```debug_cmd.sh``` open a web server for PTZ camera control on IP port 8080; add a SSH and a FTP server; overwrite temporary hosts, profile, group, passwd, and shadow file; connect with your credential to your WiFi and update via NTP the clock.
+After the [boot process](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/AugentixFWboot_noSDcard.log), the camera retain the `/home` folder even after a powerdown, until the reset button is manually pressed.\
+the `/bak` folder is mounted as ReadOnly and retain all the files requested to startup including `start.sh` and `p2pcam.sqfs`.\
+the `/tmp` folder is created at every boot and the `start.sh` is copied from `/bak`; the one in `/tmp` is the one executed during the startup process. `/mnt`, `/var`, log and ini files are here.\
+the `start.sh` load some drivers, check if a `firmware.bin` or a `debug_cmd.sh` is on the SD card and upgrade or run it, then init the sensor, ptz, voice, wifi, call `rsyscall.hc1703` and finally mount `/bak/p2pcam.sqfs` to run the p2pcam (closed source bineary), wich control all the higher function of the camera and try to connect with the cloud.\
+the `debug_cmd.sh` open a web server for PTZ camera control on IP port 8080; add a SSH and a FTP server; overwrite temporary `hosts`, `profile`, `group`, `passwd`, and `shadow` file; connect with your credential to your WiFi and update via NTP the clock.
 
 
 ## Device Details
