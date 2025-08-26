@@ -7,18 +7,18 @@ The camera's behaviour appears very similar to the Goke GK7102 Cloud IP Cameras,
 
 ## Debug Scripts and Files
 
-By default, the startup script ```/tmp/start.sh``` will try to load and run some [commands](https://github.com/Jalecom/Augentix-HC1703L-PTZ-IPCam-Teardown/blob/main/tmp/start.sh)
+By default, the startup script `/tmp/start.sh` will try to load and run some [commands](https://github.com/Jalecom/Augentix-HC1703L-PTZ-IPCam-Teardown/blob/main/tmp/start.sh)
 
 ## Files running from SD Card
 
-To run debug scripts create a file ```debug_cmd.sh``` on an SD card and you will be able to execute bash commands from it.
-Note the SD card is mounted in /mnt and the camera looks for /mnt/debug_cmd.sh
+To run debug scripts, create a file named `debug_cmd.sh` on an SD card. You will then be able to execute your bash commands from it.
+Note that the SD card is mounted in `/mnt` and the camera looks for `/mnt/debug_cmd.sh` while `start.sh` is running, before the WiFi drivers are loaded and before `p2pcam` binary is executed.
 
 ## Security
 
 The security of these devices is terrible.
 * DO NOT expose these cameras to the internet.
-* Logs in /tmp/augentix.log
+* Logs in `/tmp/augentix.log`, `/tmp/icam365.log` and `/tmp/libwebrtc.log`.
 * By default the camera wants to use some app [iCam365 on Google Play](https://play.google.com/store/apps/details?id=com.tange365.icam365) or [iCam365 on AppStore](https://apps.apple.com/us/app/icam365/id1444978112)
 
 ## Hack Features
@@ -100,14 +100,6 @@ Current version works from microSD card and do not require installation.
 * rtsp://admin:@192.168.200.1:8001/0/av0 (with audio)
 * rtsp://admin:@192.168.200.1:8001/0/av1 (low quality)
 
-
-### Debug Scripts and Files
-
-By default, the startup script ```/tmp/start.sh``` will try to load and run some commands
-
-### Files running from SD Card
-
-To run debug scripts create a file ```debug_cmd.sh``` on an SD card and you will be able to execute bash commands from it.
 
 ### End of Startup process
 
