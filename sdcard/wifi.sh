@@ -55,7 +55,7 @@ udhcpc -i $INTERFACE -x hostname:Augentix
 # Fine
 echo "Connected to $SSID!"
 
-Sincronizza con ntpd di busybox sulla SD
+# Sincronizza con ntpd di busybox sulla SD
 /mnt/hack/busybox ntpd -d -n -q -p pool.ntp.org
 date
 
