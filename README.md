@@ -34,7 +34,7 @@ The security of these devices is terrible.
 
 Current version works from microSD card and do not require installation.
 
-* Download [the hack](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.2.zip)
+* Download [the hack](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.3.zip)
 * Copy contents of folder ```sdcard``` to the main directory of a vfat/fat32 formatted microSD card
 * To connect the camera to your WiFi edit and insert your SSID and PWD in the ```debug_cmd.sh```
 * Insert microSD card into camera and reboot the device
@@ -46,7 +46,7 @@ Current version works from microSD card and do not require installation.
 
 * ~~TO DO - Wi-Fi configuration without cloud account~~
 * ~~TO DO - Blocking cloud hosts~~
-* TO DO - ~~Fix on webui ip retrive error~~, ~~LED IR on/off button~~
+* ~~TO DO - Fix on webui ip retrive error~~, ~~LED IR on/off button~~
 * TO DO - Will be possible retrive a single current picture from the camera via webui ?
 
 ### 2025-05-21
@@ -103,11 +103,19 @@ Current version works from microSD card and do not require installation.
 
 ### Debug Scripts and Files
 
-By default, the startup script ```/home/start.sh``` will try to load and run some commands
+By default, the startup script ```/tmp/start.sh``` will try to load and run some commands
 
 ### Files running from SD Card
 
 To run debug scripts create a file ```debug_cmd.sh``` on an SD card and you will be able to execute bash commands from it.
+
+### End of Startup process
+
+After the [boot process](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/AugentixFWboot_noSDcard.log), the camera retain the ```/home``` folder even after a powerdown, until the reset button is manually pressed.\
+the ```/bak``` folder is mounted as ReadOnly and retain all the files requested to startup including ```start.sh``` and ```p2pcam.sqfs```.\
+the ```/tmp``` folder is created at every boot and the ```start.sh``` is copied from ```/bak```; the one in ```/tmp``` is the one executed during the startup process. ```/mnt```, ```/var```, log and ini files are here.\
+the ```start.sh``` load some drivers, check if a ```firmware.bin``` or a ```debug_cmd.sh``` is on the SD card and upgrade or run it, then init the sensor, ptz, voice, wifi, call ```rsyscall.hc1703``` and finally mount ```/bak/p2pcam.sqfs``` to run the p2pcam (closed source bineary), wich control all the higher function of the camera and try to connect with the cloud.\
+the ```debug_cmd.sh``` open a web server for PTZ camera control on IP port 8080; add a SSH and a FTP server; overwrite temporary hosts, profile, group, passwd, and shadow file; connect with your credential to your WiFi and update via NTP the clock.
 
 
 ## Device Details
