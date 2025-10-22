@@ -1,0 +1,216 @@
+#!/bin/sh
+#
+echo "Content-type: text/html"
+echo ""
+command=`echo "$QUERY_STRING" | awk '{split($0,array,"&")} END{print array[1]}' | awk '{split($0,array,"=")} END{print array[2]}'`
+date=`date`
+# ipadd=`ip route get 1 | awk '{print $NF;exit}'`
+# used ifconfig as ip is not available in busybox
+ipadd=`ifconfig wlan0 | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'`
+uptime=`uptime`
+
+# check the hack type flag in the /home folder 
+if [ -f /home/HACKP ]; then
+hacktype="PERSISTENT in the /bak folder"
+elif [ -f /home/HACKT ]; then
+hacktype="Temporary in RAM only"
+elif [ -f /home/HACKSD ]; then
+hacktype="SD CARD"
+fi
+
+
+cat <<EOT
+<!DOCTYPE html>
+<html>
+<head>
+<title>Augentix hacks UI</title>
+<style>
+body {
+    font-size: 100%;
+    font-family: Arial, Verdana, sans-serif;
+}
+#toggle { display: none; }
+#web-commands {
+  display: none;
+  margin-left: 20px;
+}
+#toggle:checked + label + #web-commands {
+  display: block;
+}
+label {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div>
+<button onclick="window.location.href='webui'" id="home">Home</button>
+<input type="checkbox" id="toggle">
+<label for="toggle">Web command test:</label>
+
+<div id="web-commands">
+<br />
+<br />
+<B>/p2pcam/p2pcam</B> stream on port 554 and open a web server on port 8001;<br />
+while rtsp can be decoded with VLC, the web server is accessible from your<br />
+browser, or from the camera itself withe the code (buttons) here below:<br /><br /> 
+Live video rtsp camera link example <a href="rtsp://$ipadd:554/0/av1" target="_blank">rtsp://$ipadd:554/0/av1</a> to be used in VLC
+<br />
+<br />
+<button onclick="window.location.href='webui?command=play'" id="playwav"        >PLAY a SOUND -> http://127.0.0.1:8001/playaudio?file=/tmp/VOICE/NoId.wav</button>
+<br />
+<br />
+<button onclick="window.location.href='webui?command=wlon'" id="wledson"        >White LEDs On  -> :8001/whitelight?mode=on</button><br />
+<button onclick="window.location.href='webui?command=wlof'" id="wledsof"        >White LEDs Off -> :8001/whitelight?mode=off</button>
+<br />
+<br />
+<table>
+    <tr align="left">
+        <td><button onclick="window.location.href='webui?command=redinfraon'"   >redinfra?mode=on</button></td>
+        <td><button onclick="window.location.href='webui?command=irctrlnig'"    >irctrl?mode=night</button></td>
+        <td><button onclick="window.location.href='webui?command=ircutonlyday'" >ircut_only?mode=day</button></td>
+		<td><button onclick="window.location.href='webui?command=ircutnig'"     >ircut?mode=night</button></td>
+    </tr>
+    <tr align="left">
+        <td><button onclick="window.location.href='webui?command=redinfraof'"   >redinfra?mode=off</button></td>
+        <td><button onclick="window.location.href='webui?command=irctrlday'"    >irctrl?mode=day</button></td>
+        <td><button onclick="window.location.href='webui?command=ircutonlynig'" >ircut_only?mode=night</button></td>
+        <td><button onclick="window.location.href='webui?command=ircutday'"     >ircut?mode=day</button></td>
+    </tr>
+</table>
+</div>
+<br />
+<br />
+<br />
+<table>
+    <tr align="center">
+        <td>GPIO 12</td>
+        <td>GPIO 77</td>
+    </tr>
+    <tr align="center">
+        <td><button onclick="window.location.href='webui?command=Won'"          >W LEDs On</button></td>
+        <td><button onclick="window.location.href='webui?command=iron'"         >IR LEDs On</button></td>
+    </tr>
+    <tr align="center">
+        <td><button onclick="window.location.href='webui?command=Woff'"         >W LEDs Off</button></td>
+        <td><button onclick="window.location.href='webui?command=iroff'"        >IR LEDs Off</button></td>
+    </tr>
+</table>
+</div>
+<br />
+<br />
+<div>
+<table>
+    <tr align="center">
+        <td><button onclick="window.location.href='webui?command=ptzlu'">&#11017;</button></td>
+        <td><button onclick="window.location.href='webui?command=ptzu'">&#11014;</button></td>
+        <td><button onclick="window.location.href='webui?command=ptzru'">&#11016;</button></td>
+    </tr>
+    <tr align="center">
+        <td><button onclick="window.location.href='webui?command=ptzl'">&#11013;</button></td>
+        <td>PTZ</td>
+        <td><button onclick="window.location.href='webui?command=ptzr'">&#10145;</button></td>
+    </tr>
+    <tr align="center">
+        <td><button onclick="window.location.href='webui?command=ptzld'">&#11019;</button></td>
+        <td><button onclick="window.location.href='webui?command=ptzd'">&#11015;</button></td>
+        <td><button onclick="window.location.href='webui?command=ptzrd'">&#11018;</button></td>
+    </tr>
+</table>
+</div>
+<br />
+Date - $date
+<br />
+IP Address - $ipadd
+<br />
+Uptime - $uptime
+<br />
+Hack Type - $hacktype
+<br />
+<a href="https://github.com/ant-thomas/zsgx1hacks" target="_blank">ZS-GX1 Hacks - Github</a> adattato per Augentix HC1703L da Jalecom
+<br />
+<div>
+</div>
+<br />Web command answer:
+</body></html>
+EOT
+
+
+ if [ "$command" = "iron" ]; then
+  gio -s 77 0 > /dev/null
+ fi
+ if [ "$command" = "iroff" ]; then
+  gio -s 77 1 > /dev/null
+ fi
+ if [ "$command" = "Won" ]; then
+  gio -s 12 1 > /dev/null
+ fi
+ if [ "$command" = "Woff" ]; then
+  gio -s 12 0 > /dev/null
+ fi
+ if [ "$command" = "play" ]; then
+  httpclt get 'http://127.0.0.1:8001/playaudio?file=/tmp/VOICE/NoId.wav'
+ fi
+ if [ "$command" = "wlon" ]; then
+  httpclt get 'http://127.0.0.1:8001/whitelight?mode=on'
+ fi
+ if [ "$command" = "wlof" ]; then
+  httpclt get 'http://127.0.0.1:8001/whitelight?mode=off'
+ fi
+ if [ "$command" = "irctrlnig" ]; then
+  httpclt get 'http://127.0.0.1:8001/irctrl?mode=night'
+ fi
+ if [ "$command" = "irctrlday" ]; then
+  httpclt get 'http://127.0.0.1:8001/irctrl?mode=day'
+ fi
+ if [ "$command" = "ircutonlyday" ]; then
+  httpclt get 'http://127.0.0.1:8001/ircut_only?mode=day'
+ fi
+ if [ "$command" = "ircutonlynig" ]; then
+  httpclt get 'http://127.0.0.1:8001/ircut_only?mode=night'
+ fi
+ if [ "$command" = "ircutnig" ]; then
+  httpclt get 'http://127.0.0.1:8001/ircut?mode=night'
+ fi
+ if [ "$command" = "ircutday" ]; then
+  httpclt get 'http://127.0.0.1:8001/ircut?mode=day'
+ fi
+ if [ "$command" = "redinfraon" ]; then
+  httpclt get 'http://127.0.0.1:8001/redinfra?mode=on'
+ fi
+ if [ "$command" = "redinfraof" ]; then
+  httpclt get 'http://127.0.0.1:8001/redinfra?mode=off'
+ fi
+
+ if [ "$command" = "ptzu" ]; then
+  /bin/ptz_test 3 && sleep 0.2 && /bin/ptz_test 0
+ fi
+ if [ "$command" = "ptzd" ]; then
+  /bin/ptz_test 4 && sleep 0.2 && /bin/ptz_test 0
+ fi
+ if [ "$command" = "ptzl" ]; then
+  /bin/ptz_test 1 && sleep 0.2 && /bin/ptz_test 0
+ fi
+ if [ "$command" = "ptzr" ]; then
+  /bin/ptz_test 2 && sleep 0.2 && /bin/ptz_test 0
+ fi
+ if [ "$command" = "ptzlu" ]; then                                                           
+  /bin/ptz_test 1 && sleep 0.2 && /bin/ptz_test 0
+  /bin/ptz_test 3 && sleep 0.2 && /bin/ptz_test 0                                                         
+ fi 
+ if [ "$command" = "ptzld" ]; then                                                           
+  /bin/ptz_test 1 && sleep 0.2 && /bin/ptz_test 0
+  /bin/ptz_test 4 && sleep 0.2 && /bin/ptz_test 0                                                         
+ fi 
+ if [ "$command" = "ptzru" ]; then                                                           
+  /bin/ptz_test 2 && sleep 0.2 && /bin/ptz_test 0
+  /bin/ptz_test 3 && sleep 0.2 && /bin/ptz_test 0                                                         
+ fi 
+ if [ "$command" = "ptzrd" ]; then                                                           
+  /bin/ptz_test 2 && sleep 0.2 && /bin/ptz_test 0
+  /bin/ptz_test 4 && sleep 0.2 && /bin/ptz_test 0
+ fi
+
+# <EOF> 
