@@ -1,0 +1,41 @@
+127.0.0.1	localhost
+127.0.1.1	Augentix
+127.0.0.1	goke
+
+127.0.0.1 fidistr.tange365.com
+127.0.0.1 foo.tas-tech.com
+127.0.0.1 ep.tange365.com
+127.0.0.1 ep.test.tange365.com
+127.0.0.1 ihome-ota-service.tange365.com
+127.0.0.1 ihome-ota-service.test.tange365.com
+127.0.0.1 www.eventextension.com
+127.0.0.1 www.ginatex.com
+127.0.0.1 www.goke-agps.com
+
+127.0.0.1 arcsoft.com
+127.0.0.1 xmpp.icloseli.cn
+127.0.0.1 relaycn.arcsoftcloud.com
+127.0.0.1 update.icloseli.cn
+127.0.0.1 esd.icloseli.cn
+127.0.0.1 upns.icloseli.cn
+
+
+127.0.0.1 argus.icloseli.cn
+127.0.0.1 relay.icloseli.cn
+127.0.0.1 stun.icloseli.cn
+127.0.0.1 api.icloseli.cn
+
+
+127.0.0.1 xmpp.icloseli.com
+127.0.0.1 relayus-w.arcsoftcloud.com
+127.0.0.1 update.icloseli.com
+127.0.0.1 esd.icloseli.com
+127.0.0.1 upns.icloseli.com
+
+127.0.0.1 api.icloseli.com
+127.0.0.1 relay.icloseli.com
+127.0.0.1 host.tange365.com
+127.0.0.1 p2p-002.host.tange365.com
+127.0.0.1 p2p-003.host.tange365.com
+127.0.0.1 ep.tange365.com
+

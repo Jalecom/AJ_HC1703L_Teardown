@@ -1,0 +1,164 @@
+#!/bin/sh
+
+# By Jalecom
+###############################################
+#
+#	PERMANENT VERSION OF THE HACK -> minihack.sh
+#
+#	A mini version of the hack is copied to /bak, on each reboot it’s copied to RAM and run from there;
+#	sensor.sh is permanently modifyed to run minihack.sh, if present; 
+#	the hack is retained in /bak folder and stay persistently even after pushing the factory reset button;
+#	due to space availability restriction in the /bak folder:
+#		- if the space in /bak is enough the hack is saved in /bak/hack
+#		- a mini version of busybox is used -> busiboxino, only 270KB with httpd, ftpd, telnetd and ntpd
+#		- telnetd is used instead dropbear ssh -> pay attention: no encryption
+#		- sensor.sh is permanently modified to run /home/minihack.sh (Yes — the very file you’re reading.)
+#		- the start.sh check before for debug_cmd.sh and then run sensor.sh wich run the hack -> minihack.sh
+#		- after the installation, the SD card is not requested anymore.
+#
+#	Removing /home/minihack.sh or touch /home/HACKNO will disable the hack even if /bak/hack is retained
+#	Last but not least, if debug_cmd.sh is present on the SD card it will be executed before (in place of)
+#	the hack because start.sh check before .
+#
+###############################################
+
+Dpath="/tmp" # this folder is in RAM and it is lost every reboot
+
+# include config
+[ ! -f /home/config.txt ] && cp /mnt/config.txt /home && chmod 777 /home/config.txt
+. /home/config.txt
+
+$log && echo "Running minihack.sh" > /home/log.txt
+
+
+# check/modify sensor.sh to run this file (e.g. minihack.sh)
+# skip if already done
+if [ ! -f /bak/sensor.orig ]; then
+	# mounting /bak read & write, then backup sensor.sh
+	$log && echo "backup of sensor.sh" >> /home/log.txt
+	mount -o rw,remount /bak
+	if ! cp /bak/sensor.sh /bak/sensor.orig; then
+		$log && echo "can't create a bakup copy of sensor.sh, exit" >> /home/log.txt
+		exit 1
+	fi
+	
+	$log && echo "check if sensor.sh run minihack.sh" >> /home/log.txt
+	# search in sensor.sh for the line "[ -f /home/minihack.sh ] && [ ! -f /mnt/debug_cmd.sh ] && /home/minihack.sh"
+	LINEA='[ -f /home/minihack.sh ] && [ ! -f /mnt/debug_cmd.sh ] && /home/minihack.sh'
+	if ! head -n 5 "/bak/sensor.sh" | tr -d '\r' | grep -xF -- "$LINEA" > /dev/null; then
+		# The line to run /home/minihack.sh isn't present — adding it now
+		$log && echo "Adding the line & chmod" >> /home/log.txt
+		awk -v line="$LINEA" 'NR==1{print; print line; next} {print}' /bak/sensor.sh > /bak/sensor.sh.tmp && mv /bak/sensor.sh.tmp /bak/sensor.sh
+		chmod 755 /bak/sensor.sh
+	fi
+fi
+
+# check or create+populate the /bak/hack folder
+# skip if already done
+$log && echo "is /bak/hack folder present ?" >> /home/log.txt
+if [ ! -d /bak/hack ]; then
+	# no hack in the /bak folder, do we have enough space ?
+	BakFree=$(df -P -k /bak | awk 'NR==2 {print $4}')
+	if [ "$BakFree" -le 350 ]; then
+		# not enough free space for the hack, exit
+		echo "not enough free $BakFree space for the hack folder in /bak" >> /home/log.txt
+		exit 1
+	fi 
+
+	# mounting /bak read & write, then copy...
+	$log && echo "create the /bak/hack/www folder" >> /home/log.txt
+	mount -o rw,remount /bak
+	mkdir -p /bak/hack/www
+	cp -r /mnt/hack/www/* /bak/hack/www
+	
+	# copy busybox
+	$log && echo "copy busyboxino" >> /home/log.txt
+	if ! cp /mnt/hack/busyboxino /bak/hack/busybox; then
+		# copy of busiboxino failed, exit
+		$log && echo "Failed to copy busyboxino, exit" >> /home/log.txt
+		exit 1
+	fi
+	
+	# copy the other files
+	$log && echo "copy the other files" >> /home/log.txt
+	FILES="group hosts.new passwd profile shadow wifi.sh"
+	for f in $FILES; do
+		if ! cp "/mnt/hack/$f" /bak/hack/ ;then
+			$log && echo "file copy to /bak/hack error, exit" >> /home/log.txt
+			exit 1
+		fi
+	done
+
+	# end of copy, remounting /bak read only...
+	$log && echo "hack copy to /bak completed" >> /home/log.txt
+	chmod -R 644 /bak/hack
+	mount -o ro,remount /bak
+
+	$log && echo "copy /home/minihack.sh & config.txt & chmod" >> /home/log.txt
+	cp /mnt/hack/minihack.sh /home/minihack.sh
+	chmod 744 /home/minihack.sh
+	cp /mnt/config.txt /home
+	chmod 777 /home/config.txt
+fi		
+
+# copy the hack to RAM
+$log && echo "copy the hack to ram" >> /home/log.txt
+if ! cp -r /bak/hack $Dpath; then
+	# error on the folder copy, exit with error code 1
+	echo "Failed to copy the hack folder to $Dpath" >> /home/log.txt
+	exit 1
+fi
+
+
+# confirm hack type: it will be visible on webui
+[ ! -f /home/HACKP ] && touch /home/HACKP
+rm /home/HACKSD
+rm /home/HACKT
+rm /home/HACK
+chmod -R 644 $Dpath/hack
+chmod 744 $Dpath/hack/www/cgi-bin/webui
+chmod +x $Dpath/hack/busybox
+chmod +x $Dpath/hack/wifi.sh
+$log && echo "hack is starting in RAM" >> /home/log.txt
+
+# overwrite temporary the original hosts file with the new one from the hack to prevent cloud connections
+mount --bind $Dpath/hack/hosts.new /etc/hosts
+
+# run httpd from hack updated busybox testing several ports
+for port in 80 8080 8090; do
+    if $Dpath/hack/busybox httpd -p "$port" -h "$Dpath/hack/www"; then
+        $log && echo "httpd started on :$port" >> /home/log.txt
+        break
+    fi
+done
+
+# set new env
+mount --bind $Dpath/hack/profile /etc/profile
+
+# possibly needed but may not be: the shadow file contain hash of the password 'cxlinux'
+# if you don't need a password uncomment the lines below
+mount --bind $Dpath/hack/group /etc/group
+mount --bind $Dpath/hack/passwd /etc/passwd
+mount --bind $Dpath/hack/shadow /etc/shadow
+
+# setup and install telnetd server - no password or cxlinux login
+$Dpath/hack/busybox telnetd -l sh
+$log && echo "started telnetd" >> /home/log.txt
+
+# start ftp server from hack updated busybox
+($Dpath/hack/busybox tcpsvd -E 0.0.0.0 21 $Dpath/hack/busybox ftpd -w / ) &
+$log && echo "started ftpd" >> /home/log.txt
+
+#################################################################################
+# let the start.sh continue and run p2pcam then run with >20s delay the commands:
+
+# silence the voice WaitWifiConfig.wav copied every reboot from start.sh line 414 or 436
+(sleep 25 && rm /tmp/VOICE/WaitWifiConfig.wav) &
+
+
+# setup WiFi connection after 30s
+# use the SSID and PWD of your WiFi from the config.txt
+. /home/config.txt
+(sleep 30 && $Dpath/hack/wifi.sh $SSID $PWD) &
+
+#	<EOF>
