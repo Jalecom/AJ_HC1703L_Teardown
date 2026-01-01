@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# By Jalecom
+#############################################
+#
+#	Type of hack
+#
+#	SD = SDcard only => the hack runs off the SD card, isn't persistent, and needs the card to stay in the camera;
+#		 removing the SD card and rebooting the device restores the camera to its previous settings.
+#
+#	T  = Temporary => The hack gets copied to RAM (e.g. /tmp/hack) and runs from there;
+#		 removing the SD card and rebooting the device restores the camera to its previous settings.
+#
+#	P  = Permanent => a mini version of the hack is copied to /bak, on each reboot it’s copied to RAM and run from there;
+#		 sensor.sh is permanently modifyed to run minihack.sh, if present; 
+#		 it stay persistently even after pushing the factory reset button;
+#		 due to space availability in the /bak folder:
+#		 - a mini version of busybox is used
+#		 - telnetd is used instead dropbear ssh
+#		 - the start.sh check before for debug_cmd.sh and then run sensor.sh wich run the hack
+#		 - after the installation, the SD card is not requested anymore.
+#
+#	NO = No hack => /home/minihack.sh is removed ( /bak/hack folder stays) and the script exit
+#
+#	Default = SD
+#
+#############################################
+# HACKS DEFINITION HERE
+
+HACKTYPE=SD
+
+#############################################
+#
+#	Connection to your WiFi
+#
+#	the p2pcam binary ask usually for registration to the chinese cloud then for your WiFi credential and position;
+#	if you don't like it, you can connect to your WiFi using the wifi.sh script writing here below your credentials
+#	and it will try to connect the SoC wlan0 interface to your WiFi automatically;
+#	it request an IP to your DHCP an assign hostname:Augentix, then syncronize the clock via pool.ntp.org
+#	by dafault (=without credential) no attempt to connect to the WiFi 
+#	You can even call it manually from SSH/telnet -> usage: wifi.sh <SSID> <PWD>
+#
+#############################################
+# WIFI CREDENTIALS HERE
+#
+#	Default -> SSID=here_your_wifi_ssid
+
+SSID='here_your_wifi_ssid'
+PWD='here_your_wifi_password'
+
+log=false # if true a /home/log.txt file is created - default: log=false
+
+#<EOF>
