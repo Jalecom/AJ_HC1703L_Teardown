@@ -1,12 +1,12 @@
-This folder is for reference only and contain the old versions of the file requested to open ssh, ftp and http to interact with the Augentix HC1703L IP camera.
+This folder is for reference only and contains old versions of the files used to open SSH, FTP, and HTTP to interact with the Augentix HC1703L IP camera
 Read please https://github.com/Jalecom/AJ_HC1703L_Teardown/ for more info.
 
 ### Short info ###
 
-Enable the last line of this dedug_cmd.sh and insert your WiFi credentials or the camera will act as AP at address 192.168.200.1
-The debug_cmd.sh will be called from your start.sh in the boot process, it runs off the SD card a web server on port 80 at the adress assigned by your router to the camera (192.168.200.1 if it acts as Access Point).
-This is a simple version of the hack where the updated busybox is only used for httpd and ftpd; as the new busybox is not overwritten to the old one in the camera, to call the new fonction /mnt/hack/busybox have to be used.
-The same hack folder of v0.4 can be used on the SD
+Enable the last line of debug_cmd.sh and insert your Wi-Fi credentials; otherwise, the camera will act as an access point at address 192.168.200.1.
+The debug_cmd.sh script is called from start.sh during the boot process. It runs, from the SD card, a web server on port 80 at the address assigned by your router to the camera (192.168.200.1 if it acts as an access point).
+This is a simple version of the hack in which the updated BusyBox is used only for httpd and ftpd. Since the new BusyBox does not overwrite the original one on the camera, the new functions must be called using /mnt/hack/busybox.
+The same hack folder from version v0.4 can be used on the SD card.
                                                                                                                                                                             
 
 #############################################
