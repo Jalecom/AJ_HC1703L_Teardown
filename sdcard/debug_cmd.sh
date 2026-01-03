@@ -40,5 +40,5 @@ if [ ! -s /tmp/wifi.sh ];then cp /mnt/wifi.sh /tmp; fi
 
 # setup WiFi connection after 40s
 # insert the SSID and PWD of your WiFi
-(sleep 40 && /tmp/wifi.sh HC1703L paperino) &
+(sleep 40 && /tmp/wifi.sh YourSSID YourPassword) &
 
