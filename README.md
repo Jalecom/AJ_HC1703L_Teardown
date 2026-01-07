@@ -53,7 +53,7 @@ Current version works from microSD card and do not require installation.
 * Copy contents of folder ```sdcard``` to the main directory of a vfat/fat32 formatted microSD card
 * To connect the camera to your WiFi edit and insert your SSID and PWD in the ```config.txt```
 * Insert microSD card into camera and reboot the device
-* If no/wrong WiFi credebtial are given, the camera act as AP at address ```192.168.200.1```
+* If no/wrong WiFi credential are given, the camera act as AP at address ```192.168.200.1```
 * Enjoy
 
 
@@ -64,13 +64,16 @@ Current version works from microSD card and do not require installation.
 * ~~TO DO - Fix on webui ip retrive error~~, ~~LED IR on/off button~~
 * ~~TO DO - Try to run in RAM only without affecting the SD~~
 * ~~TO DO - If the space is enough, add a permanent version to run even without an SD~~
-* TO DO - Read the ip assigned to the camera after the welcome message
+* ~~TO DO - Read the ip assigned to the camera after the welcome message~~
 * TO DO - Will be possible retrive a single current picture from the camera via webui ?
 
 
+### 2026-01-06
+* The camera announces the assigned IP address aloud if [readip.sh](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/sdcard/readip.sh) and [numbers.wav](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/sdcard/numbers.wav) are present. At the end of the boot process, `wifi.sh` runs `/mnt/hack/readip.sh` if it exists. The `readip.sh` script can also be run manually with a numeric argument, in which case the address is spoken immediately, without the 5-second delay. To play the audio file it is used the p2pcam feature on port 8001: `httpclt get "http://127.0.0.1:8001/playaudio?file=/tmp/ip.wav"`
+
 ### 2025-12-31 [HC1703L_Hack_v0.4.zip](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.4.zip)
 * Added a Temporary version of the Hack stored in the RAM of the camera. The SD is only required to start.
-* Added a Permanent mini version stored in ```/bak/hack``` - It use busybox telnetd instead dropbear due to space: the minihack is only 300KB and the SD card can be removed.
+* Added a Permanent mini version stored in `/bak/hack` - It use busybox telnetd instead dropbear due to space: the minihack is only 300KB and the SD card can be removed.
 * Added a simple sniffer to check who the camera is calling.   
 * Direct call to ptz_test from webui (pan & tilt movement, thanks to TwoTeeToRoomTwo)
 * Open `config.txt` and insert your wifi credentials.
