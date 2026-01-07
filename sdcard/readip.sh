@@ -36,7 +36,7 @@ generate_ip_wav() {
     IP="$1"
     rm -f "$OUTPUT_WAV"
 
-    # 1) Header WAV provvisorio A-LAW 8kHz mono
+    # 1) Temp A-law 8 kHz mono WAV header
     printf 'RIFF\x00\x00\x00\x00WAVEfmt \x10\x00\x00\x00\x06\x00\x01\x00\x40\x1F\x00\x00\x40\x1F\x00\x00\x01\x00\x08\x00fact\x04\x00\x00\x00\x00\x00\x00\x00data\x00\x00\x00\x00' > "$OUTPUT_WAV"
 
     TOTAL_DATA_LEN=0
@@ -61,7 +61,7 @@ generate_ip_wav() {
                 TOTAL_DATA_LEN=$(( TOTAL_DATA_LEN + PAUSE_LEN ))
                 ;;
             ".")
-                # Pause dot 500ms (4000 byte)
+                # Pause dot 500ms (4000 byte A-LAW silence)
                 dd if=/dev/zero bs=1 count=$POINT_LEN 2>/dev/null \
                     | tr '\0' "$SILENCE_BYTE" >> "$OUTPUT_WAV"
                 TOTAL_DATA_LEN=$(( TOTAL_DATA_LEN + POINT_LEN ))
@@ -71,7 +71,7 @@ generate_ip_wav() {
         i=$(expr $i + 1)
     done
 
-    # 2) Aggiornamento header WAV
+    # 2) Fix WAV header lengths
     RIFF_SIZE=$(( TOTAL_DATA_LEN + 36 ))
     DATA_SIZE=$TOTAL_DATA_LEN
 
