@@ -29,7 +29,7 @@ if [ ! -d $Dpath/hack ]; then
 		chmod +x $Dpath/hack/busybox
 		chmod +x $Dpath/hack/dropbearmulti
 		chmod +x $Dpath/hack/wifi.sh
-		
+		chmod +x $Dpath/hack/www/cgi-bin/webui
 	else
 		# error on the folder copy
 		touch /home/HACK_copy_error
