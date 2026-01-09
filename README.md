@@ -69,7 +69,7 @@ Current version works from microSD card and do not require installation.
 
 
 ### 2026-01-06
-* The camera announces the assigned IP address aloud if [readip.sh](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/SDCARD_v0.4/hack/readip.sh) and [numbers.wav](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/SDCRD_v0.4/numbers.wav) are present. At the end of the boot process, `wifi.sh` runs `/mnt/hack/readip.sh` if it exists. The `readip.sh` script can also be run manually with a numeric argument, in which case the address is spoken immediately, without the 5-second delay. To play the audio file it is used the p2pcam feature on port 8001: `httpclt get "http://127.0.0.1:8001/playaudio?file=/tmp/ip.wav"`
+* The camera announces the assigned IP address aloud if [readip.sh](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/SDCARD_v0.4/hack/readip.sh) and [numbers.wav](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/SDCARD_v0.4/numbers.wav) are present. At the end of the boot process, `wifi.sh` runs `/mnt/hack/readip.sh` if it exists. The `readip.sh` script can also be run manually with a numeric argument, in which case the address is spoken immediately, without the 5-second delay. To play the audio file it is used the p2pcam feature on port 8001: `httpclt get "http://127.0.0.1:8001/playaudio?file=/tmp/ip.wav"`
 
 ### 2025-12-31 [HC1703L_Hack_v0.4.zip](https://github.com/Jalecom/AJ_HC1703L_Teardown/blob/main/HC1703L_Hack_v0.4.zip)
 * Added a Temporary version of the Hack stored in the RAM of the camera. The SD is only required to start.
