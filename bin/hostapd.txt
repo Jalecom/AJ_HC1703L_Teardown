@@ -1,0 +1,132 @@
+HOSTAPD(8)                     System Manager's Manual                    HOSTAPD(8)
+
+DRAFT o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+	   This document is preliminary and may be incomplete or inaccurate
+
+	  o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+NAME
+       hostapd - IEEE 802.11 Access Point and WPA/WPA2 authenticator for HC1703 cameras
+
+SYNOPSIS
+       hostapd [-B] [-d] [-t] [-K] [-f logfile] config_file
+
+DESCRIPTION
+       hostapd  is  a  user-space  daemon  that implements IEEE 802.11 Access Point (AP)
+       functionality together with WPA/WPA2, RSN and IEEE 802.1X authentication.
+
+       This build of hostapd is used in HC1703-based IP cameras to create the temporary
+       Wi-Fi access point used for device setup and, in some cases, for local networking.
+
+       The daemon uses the Linux nl80211 / cfg80211 interface to communicate with the
+       wireless driver and implements a complete WPA2 authentication state machine.
+
+FEATURES
+       This build supports:
+
+           - IEEE 802.11 AP mode
+           - WPA and WPA2 (RSN)
+           - WPA-PSK (pre-shared key)
+           - WPA-Enterprise (802.1X with RADIUS)
+           - TKIP and CCMP (AES) encryption
+           - nl80211 driver interface
+
+       The following upstream features are NOT present in this build:
+
+           - WPS (Wi-Fi Protected Setup)
+           - Wi-Fi Direct (P2P)
+           - Mesh (802.11s)
+           - DFS / radar detection
+           - Automatic channel selection
+
+OPTIONS
+       -B     Run in background (daemon mode). Causes hostapd to fork after initialization.
+
+       -d     Enable debug output. Can be specified multiple times for more verbose output.
+
+       -t     Include timestamps in debug output.
+
+       -K     Do not clear old EAPOL state on startup.
+
+       -f logfile
+              Write log output to the specified file instead of stderr.
+
+CONFIGURATION
+       hostapd is configured using a text configuration file.
+
+       Common options:
+
+           interface=wlan0
+           bridge=br0
+           driver=nl80211
+           ssid=IPCAM_1234
+           hw_mode=g
+           channel=6
+
+       Open (unencrypted) access point:
+
+           auth_algs=1
+           wpa=0
+
+       WPA2-PSK:
+
+           wpa=2
+           wpa_key_mgmt=WPA-PSK
+           wpa_passphrase=12345678
+           rsn_pairwise=CCMP
+
+       WPA-Enterprise (802.1X):
+
+           wpa=2
+           wpa_key_mgmt=WPA-EAP
+           ieee8021x=1
+           auth_server_addr=192.168.1.10
+           auth_server_port=1812
+           auth_server_shared_secret=secret
+
+       Supported encryption ciphers:
+
+           wpa_pairwise=TKIP CCMP
+           rsn_pairwise=CCMP
+
+OPERATION IN HC1703 CAMERAS
+       In HC1703-based cameras, hostapd is used to create the temporary Wi-Fi access
+       point that a smartphone connects to during device setup.
+
+       The typical sequence is:
+
+           1. hostapd starts and creates an SSID (e.g. IPCAM_xxxx)
+           2. The phone connects to this access point
+           3. The phone sends the home Wi-Fi credentials
+           4. hostapd is stopped
+           5. The camera switches to station (client) mode using wpa_supplicant
+
+       Some firmwares keep hostapd running permanently to provide a local AP.
+
+DRIVER INTERFACE
+       This build uses the Linux nl80211/cfg80211 interface to communicate with the Wi-Fi
+       driver via netlink sockets.
+
+       This allows hostapd to:
+
+           - Create and remove AP interfaces
+           - Set SSID, channel and security
+           - Receive client connect/disconnect events
+           - Exchange encryption keys with the driver
+
+FILES
+       /etc/hostapd.conf
+              Default configuration file.
+
+       /tmp/hostapd.conf
+              Often generated dynamically by camera firmware.
+
+SEE ALSO
+       wpa_supplicant(8), iw(8), iwconfig(8)
+
+AUTHOR
+       This software is based on hostapd by Jouni Malinen <j@w1.fi>.
+       This embedded build is integrated into HC1703 IP camera firmware.
+
+HOSTAPD(8)

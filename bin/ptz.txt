@@ -1,0 +1,149 @@
+PTZTEST(1)                  PTZ User Manual                      PTZTEST(1)
+
+DRAFT o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+	   This document is preliminary and may be incomplete or inaccurate
+
+	  o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+NAME
+       ptztest - PTZ (Pan-Tilt-Zoom) control and test utility
+
+SYNOPSIS
+       ptztest
+       ptztest <command>
+
+DESCRIPTION
+       ptztest is a command-line utility used to control and test a PTZ
+       (Pan-Tilt-Zoom) device through the character device /dev/ptz.
+
+       The utility communicates directly with a proprietary PTZ kernel
+       driver using ioctl() system calls. It is intended for factory
+       testing, debugging, calibration, and low-level control of PTZ
+       camera mechanisms.
+
+       When executed without arguments, ptztest runs in interactive mode
+       and presents a control menu. When a single argument is provided,
+       the corresponding PTZ command is executed once and the program exits.
+
+DEVICE
+       /dev/ptz
+              Character device providing access to the PTZ motor driver.
+
+MODES OF OPERATION
+       Interactive mode:
+              ptztest
+
+              Displays a menu and waits for user input from stdin.
+
+       One-shot mode:
+              ptztest <command>
+
+              Executes a single PTZ command specified by the first character
+              of <command>.
+
+COMMANDS
+       0      Stop all PTZ movement.
+
+       1      Move left (pan left).
+
+       2      Move right (pan right).
+
+       3      Move up (tilt up).
+
+       4      Move down (tilt down).
+
+       5      Move up-left.
+
+       6      Move up-right.
+
+       7      Move down-left.
+
+       8      Move down-right.
+
+       9      Zoom in.
+
+       a      Zoom out.
+
+       b      Set preset position (PSP).
+              The user is prompted for a preset number.
+
+       c      Delete preset position (PSP).
+              The user is prompted for a preset number.
+
+       d      Call preset position (PSP).
+              The user is prompted for a preset number.
+
+       e      Start cruise mode.
+              The user is prompted for a route number.
+
+       f      Start auto-scan mode.
+
+       g      Set pan and tilt speed.
+              The user is prompted to enter x-speed and y-speed.
+
+       h      Perform relative movement.
+              Moves the camera by a relative offset based on the mechanical
+              range and current position.
+
+       p      Show current PTZ position.
+
+       r      Reset PTZ device.
+
+       t      Toggle PTZ driver debug output on or off.
+
+       y      Set PPS (pulse/precision parameter).
+              The user is prompted for a new PPS value.
+
+       ?      Display the command menu.
+
+       q      Exit the program (interactive mode only).
+
+SPEED CONTROL
+       The pan (x-speed) and tilt (y-speed) values are global parameters
+       used by movement commands. Default values are:
+
+              x-speed = 32
+              y-speed = 32
+
+       Speed values are passed directly to the PTZ driver and are not
+       range-checked by ptztest.
+
+EXAMPLES
+       Start interactive PTZ control:
+              ptztest
+
+       Move camera left:
+              ptztest 1
+
+       Zoom in:
+              ptztest 9
+
+       Reset PTZ mechanism:
+              ptztest r
+
+NOTES
+       - Root privileges are usually required to access /dev/ptz.
+       - No safety checks are performed on movement limits.
+       - Improper usage may cause mechanical stress or damage.
+
+SECURITY CONSIDERATIONS
+       ptztest provides unrestricted low-level control of the PTZ hardware.
+       If exposed to untrusted users, it may allow:
+       - unauthorized camera movement
+       - forced mechanical wear
+       - bypass of operational restrictions
+       - enabling of kernel driver debug output
+
+       Access to this utility should be restricted in production systems.
+
+FILES
+       /dev/ptz
+              PTZ device control interface.
+
+SEE ALSO
+       ioctl(2), open(2), close(2)
+
+AUTHOR
+       Provided by the device vendor for PTZ debugging and testing.
+

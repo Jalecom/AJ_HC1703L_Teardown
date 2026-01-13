@@ -1,0 +1,90 @@
+GIO(1)                     GPIO User Manual                         GIO(1)
+
+DRAFT o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+	   This document is preliminary and may be incomplete or inaccurate
+
+	  o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+NAME
+       gio - direct GPIO control utility using /dev/gio
+
+SYNOPSIS
+       gio -g <gpio>
+       gio -s <gpio> <value>
+       gio -do <gpio> <value>
+       gio -di <gpio>
+
+DESCRIPTION
+       gio is a command-line utility used to directly control GPIO
+       (General Purpose Input/Output) pins through the character device
+       /dev/gio.
+
+       The utility communicates with a proprietary kernel driver using
+       ioctl() system calls. It does not rely on sysfs, libgpiod, or
+       standard Linux GPIO frameworks.
+
+       gio is typically intended for hardware debugging, factory testing,
+       or low-level device control in embedded systems.
+
+OPTIONS
+       -g <gpio>
+              Read the current value of the specified GPIO.
+
+              The GPIO must already be configured as input or output.
+              The returned value is either 0 or 1.
+
+       -s <gpio> <value>
+              Set the value of the specified GPIO.
+
+              <value> must be 0 or 1.
+              The GPIO must be configured as output.
+
+       -do <gpio> <value>
+              Configure the specified GPIO as output and set its value.
+
+              <value> must be 0 or 1.
+
+       -di <gpio>
+              Configure the specified GPIO as input.
+
+EXAMPLES
+       Configure GPIO 12 as output and set it high:
+              gio -do 12 1
+
+       Set GPIO 12 to low:
+              gio -s 12 0
+
+       Configure GPIO 7 as input:
+              gio -di 7
+
+       Read GPIO 7 value:
+              gio -g 7
+
+NOTES
+       - Access to /dev/gio is required.
+       - The command typically must be executed as root.
+       - No validation is performed on GPIO numbers.
+       - Improper usage may cause hardware malfunction.
+
+SECURITY CONSIDERATIONS
+       gio provides unrestricted low-level access to GPIO hardware.
+       Uncontrolled usage may allow:
+       - watchdog disable
+       - forced reboot
+       - power rail manipulation
+       - sensor or peripheral interference
+
+       Access to this utility should be restricted in production systems.
+
+FILES
+       /dev/gio
+              Character device used to communicate with the GPIO kernel
+              driver.
+
+SEE ALSO
+       ioctl(2), open(2), close(2)
+
+AUTHOR
+       Provided by the device vendor for embedded platform support.
+
