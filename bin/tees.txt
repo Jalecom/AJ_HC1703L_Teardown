@@ -1,0 +1,146 @@
+TEES(1)                     User Commands                         TEES(1)
+
+DRAFT o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+	   This document is preliminary and may be incomplete or inaccurate
+
+	  o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+NAME
+       tees - logging, dump and remote debug utility
+
+SYNOPSIS
+       tees [OPTIONS]
+
+DESCRIPTION
+       tees is an embedded debug and logging utility used to collect,
+       buffer and redistribute log data from multiple sources.
+
+       It can operate as a server daemon accepting TCP and UNIX socket
+       connections, or as a client forwarding standard input to an
+       existing tees instance.
+
+       tees is typically used during development, factory testing or
+       field diagnostics. It is not intended for general-purpose or
+       secure remote access.
+	   
+tees -h
+	   As server, send anything received on unix socket /var/run/tees.sock to tcp clients.
+	   Usage: tees [-s [[-b buffer_size] [-v] [-p port_listen]] [-m max_file] [-e|E 'commands to execute before dump'] [-c commands_list][-a file_to_dump_1 [-a file_to_dump_2...] -o|O dump_file_1 [ -o|O dump_file_2 ...]]]
+        -s as server
+        -b buffer size in K. default is 8
+        -v
+        -m maximum log file count. default is 20
+        -a file to be added to dump-out
+        -o dump_file_x... path of output file, in prefered sequence
+        -O same -o, but will overwrite old file
+        -c comma seperated allowed commands list
+
+	   As client, send any input from stdin to /tmp/tees.cock
+       for example:  cat /etc/passwd | tees {--target ID}
+       As client, send control-command to server
+       Usage: tees {--open|--close} ID
+
+MODES OF OPERATION
+       Server mode
+              When started with -s, tees runs as a background server
+              process. It listens for incoming TCP clients and UNIX
+              domain socket connections, collects log data and stores
+              it in internal ring buffers.
+
+       Client mode
+              When started without -s, tees connects to a running
+              server instance and forwards standard input to it.
+
+OPTIONS
+       -s
+              Run in server mode.
+
+       -p <port>
+              TCP port to listen on in server mode.
+              Default is 3201.
+
+       -b <size>
+              Size of the internal ring buffer in bytes.
+              Default is 8192.
+
+       -m <count>
+              Maximum number of dump files to keep.
+
+       -a <path>
+              Enable automatic dump to the specified directory.
+
+       -e <command>
+              Execute a command and store its output in the log buffer.
+
+       -E <command>
+              Execute a command periodically and store its output.
+
+       -c <cmd1,cmd2,...>
+              Restrict executable commands to the specified whitelist.
+
+       -d
+              Enable debug output.
+
+       -h
+              Display help information.
+
+LOG CHANNELS
+       tees supports multiple independent log channels.
+
+       Each channel maintains its own ring buffer and can be accessed
+       through a dedicated UNIX domain socket. Clients may attach to
+       channels to receive live or buffered output.
+
+       Channel creation and destruction is typically restricted to
+       local clients.
+
+DUMP FILES
+       tees can generate log dump files on request or automatically.
+
+       Dumps contain the contents of the internal ring buffer and are
+       written to files named DUMPLOG or similar, depending on the
+       configuration.
+
+COMMAND EXECUTION
+       tees can execute external commands and capture their standard
+       output.
+
+       Commands may be received from TCP clients or local connections.
+       Optional filtering and whitelisting is supported, but this
+       mechanism is not designed as a security boundary.
+
+       This feature is intended solely for diagnostic purposes.
+
+FILES
+       /var/run/tees.sock
+              Default UNIX domain socket for the main log channel.
+
+       /var/run/tees.sock*
+              Additional sockets for secondary log channels.
+
+       DUMPLOG
+              Default name for generated dump files.
+
+SECURITY NOTES
+       tees provides no authentication and only minimal input
+       validation.
+
+       It must not be exposed to untrusted networks or users.
+
+       Running tees on production systems may pose significant
+       security risks.
+
+EXIT STATUS
+       0      Successful execution.
+       >0     An error occurred.
+
+SEE ALSO
+       tee(1), logger(1), syslogd(8)
+
+DISCLAIMER
+       This tool is intended for internal use only.
+       Behaviour and options may vary between firmware versions.
+
+AUTHOR
+       Vendor/OEM internal tool. No upstream project is known.
