@@ -7,10 +7,18 @@ DRAFT o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
 	  o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
 
 NAME
-       hostapd - IEEE 802.11 Access Point and WPA/WPA2 authenticator for HC1703 cameras
+       hostapd v2.6-devel
+	   User space daemon for IEEE 802.11 AP management,
+	   IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator
+	   Access Point and WPA/WPA2 authenticator for HC1703 cameras
+	   Copyright (c) 2002-2016, Jouni Malinen <j@w1.fi> and contributors
 
 SYNOPSIS
        hostapd [-B] [-d] [-t] [-K] [-f logfile] config_file
+	   
+	   hostapd [-hdBKtv] [-P <PID file>] [-e <entropy file>] \
+         [-g <global ctrl_iface>] [-G <group>] \
+         <configuration file(s)>
 
 DESCRIPTION
        hostapd  is  a  user-space  daemon  that implements IEEE 802.11 Access Point (AP)
@@ -41,11 +49,27 @@ FEATURES
            - Automatic channel selection
 
 OPTIONS
+	   -h     Show usage
+	   
+	   -d     Show more debug messages (-dd for even more)
+
        -B     Run in background (daemon mode). Causes hostapd to fork after initialization.
+	   
+	   -e     Entropy file
+	   
+	   -g     Global control interface path
 
-       -d     Enable debug output. Can be specified multiple times for more verbose output.
+       -G     Group for control interfaces
+	   
+	   -P     PID file
+	   
+       -K     Include key data in debug messages
+	   
+       -S     Start all the interfaces synchronously
+	   
+       -t     Include timestamps in some debug messages
 
-       -t     Include timestamps in debug output.
+       -v      Display version information on the terminal and exit.
 
        -K     Do not clear old EAPOL state on startup.
 
@@ -128,5 +152,6 @@ SEE ALSO
 AUTHOR
        This software is based on hostapd by Jouni Malinen <j@w1.fi>.
        This embedded build is integrated into HC1703 IP camera firmware.
+	   This manual page is derived from the README file included in the origina hostapd distribution.
 
 HOSTAPD(8)

@@ -1,0 +1,176 @@
+HTTPCLT(1)                    User Commands                   HTTPCLT(1)
+
+DRAFT o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+	   This document is preliminary and may be incomplete or inaccurate
+
+	  o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+NAME
+       httpclt - HTTP client utility for embedded systems
+
+SYNOPSIS
+       httpclt {COMMAND URL [OPTIONS]}+
+
+DESCRIPTION
+       httpclt is a lightweight HTTP client designed for embedded Linux
+       systems like BusyBox. It supports GET, POST, and PUT operations
+       with timeout control and multipart form data uploads.
+
+COMMANDS
+       get URL
+              Perform HTTP GET request to URL and print response to stdout.
+              
+              Example:
+                httpclt get http://example.com/api/data
+
+       get2 URL
+              Perform HTTP GET request with callback function. Saves the
+              downloaded content to ./ota.bin file. Useful for firmware
+              updates.
+              
+              Example:
+                httpclt get2 http://example.com/firmware.bin
+
+       getfile URL FILENAME
+              Download content from URL and save to specified FILENAME.
+              
+              Example:
+                httpclt getfile http://example.com/image.jpg photo.jpg
+
+       post URL DATA
+              Send HTTP POST request with DATA as the request body.
+              
+              Example:
+                httpclt post http://example.com/api "param1=value1&param2=value2"
+
+       multi URL PARAMS...
+              Send HTTP POST with multipart/form-data encoding. Supports
+              file uploads and form fields.
+              
+              Parameters format:
+                name=value          - Regular form field
+                name=@filepath      - File upload (content only)
+                name=#filepath      - File upload (with file metadata)
+              
+              Example:
+                httpclt multi http://example.com/upload \
+                  username=john \
+                  password=secret \
+                  photo=@/tmp/image.jpg \
+                  document=#/tmp/report.pdf
+
+ENVIRONMENT VARIABLES
+       timeout
+              Set request timeout in milliseconds. Default is 8000ms (8 seconds).
+              
+              Example:
+                export timeout=15000
+                httpclt get http://slow-server.com/data
+
+EXIT STATUS
+       0      Success
+       
+       1      Usage error or invalid arguments
+       
+       -2     Timeout error
+       
+       -3     Socket/connection error
+       
+       -4     File I/O error
+       
+       -5     DNS resolution error
+       
+       -6     Connection failed
+       
+       -8     Send error
+       
+       -11    Connection refused
+       
+       -102   Invalid URL format
+       
+       -103   File creation error
+       
+       -104   File open error
+       
+       >0     HTTP status code (when non-2xx response)
+
+FEATURES
+       • Multiple requests in single command line
+       • Connection keep-alive for performance
+       • Automatic retry on transient failures
+       • Chunked transfer encoding support
+       • Basic authentication support (embedded in URL)
+       • Custom headers and multipart uploads
+       • Timeout control via environment variable
+
+URL FORMAT
+       http://[user:password@]host[:port][/path]
+       ws://[user:password@]host[:port][/path]
+       
+       Examples:
+         http://example.com
+         http://user:pass@example.com:8080/api/endpoint
+         http://192.168.1.100:8000/download
+
+NOTES
+       • The program can execute multiple commands in sequence by
+         chaining them on the command line
+       
+       • HTTP response body is printed to stdout for 'get' and 'post'
+         commands (when status is 200 OK)
+       
+       • Response headers and status code are printed in debug format
+         like: [STATUS_CODE]
+       
+       • For 'get2' command, output is saved to ./ota.bin by default
+       
+       • Authentication credentials in URL are automatically Base64
+         encoded for HTTP Basic Auth
+       
+       • The utility supports WebSocket URLs (ws://) but limited to
+         HTTP-style requests
+
+EXAMPLES
+       Simple GET request:
+         httpclt get http://api.example.com/status
+
+       Download file with custom timeout:
+         export timeout=30000
+         httpclt getfile http://example.com/large.zip output.zip
+
+       POST form data:
+         httpclt post http://example.com/login "user=admin&pass=secret"
+
+       Upload multiple files with form data:
+         httpclt multi http://example.com/upload \
+           title="My Upload" \
+           description="Test files" \
+           file1=@/tmp/doc.pdf \
+           file2=#/tmp/image.png
+
+       Multiple operations in sequence:
+         httpclt get http://example.com/first \
+                 post http://example.com/second "data=value" \
+                 getfile http://example.com/third output.txt
+
+       With authentication:
+         httpclt get http://user:password@example.com/api/private
+
+LIMITATIONS
+       • No HTTPS/SSL support
+       • Limited HTTP header customization
+       • No cookie handling
+       • No redirect following
+       • Maximum URL length: 64 characters for hostname
+       • Maximum request buffer: 2048 bytes
+
+BUGS
+       Report bugs to the device manufacturer or embedded system vendor.
+
+SEE ALSO
+       wget(1), curl(1), nc(1)
+
+AUTHOR
+       Provided by the device vendor for embedded platform support.
+	   Original source unknown.

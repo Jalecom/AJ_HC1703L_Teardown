@@ -1,0 +1,104 @@
+IWLIST(8)                    Embedded Wireless Tools                    IWLIST(8)
+
+DRAFT o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+	   This document is preliminary and may be incomplete or inaccurate
+
+	  o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+NAME
+       iwlist - display detailed wireless interface information
+
+SYNOPSIS
+       iwlist interface [scanning | frequency | rate | power | retry | auth | keys | modulation]
+
+DESCRIPTION
+       iwlist is a diagnostic tool used to display detailed wireless information
+       for IEEE 802.11 interfaces using Linux Wireless Extensions (WEXT).
+
+       This build of iwlist is part of the HC1703 IP camera firmware and is derived
+       from the open-source Wireless Tools package by Jean Tourrilhes.
+
+       The code is based on iwlist.c from wireless-tools version 29 (circa 2009),
+       with minor backports from version 30, and has been modified for embedded use.
+
+ORIGIN
+       This iwlist implementation is derived from:
+
+           Wireless Tools for Linux
+           Copyright (c) 1997–2011 Jean Tourrilhes <jt@hpl.hp.com>
+
+       Specifically from:
+           wireless-tools v29, file iwlist.c
+
+       The following upstream functions are present in this build:
+
+           print_scanning_info()
+           print_scanning_token()
+           print_freq_info()
+           print_bitrate_info()
+           print_txpower_info()
+           print_modul_info()
+           print_auth_info()
+           print_key_info()
+           print_pm_info()
+           print_retry_info()
+           print_event_capa()
+
+       Command-line help, banner strings, and GPL copyright notices
+       have been removed in this firmware version.
+
+COMMANDS
+       scanning
+              Perform a scan and list detected access points.
+
+       frequency
+              Display available channels and frequencies.
+
+       rate
+              Show supported bitrates.
+
+       power
+              Display power management capabilities.
+
+       retry
+              Show retry limits and lifetime.
+
+       auth
+              Show authentication and WPA capabilities.
+
+       keys
+              Display encryption key status.
+
+       modulation
+              Show supported modulation schemes.
+
+IMPLEMENTATION
+       This program uses Linux Wireless Extensions ioctls including:
+
+           SIOCGIWSCAN
+           SIOCGIWRATE
+           SIOCGIWFREQ
+           SIOCGIWPOWER
+           SIOCGIWRETRY
+           SIOCGIWENCODE
+           SIOCGIWAUTH
+
+       Output formatting and data parsing follow the upstream Wireless Tools design.
+
+LEGAL NOTICE
+       This firmware contains code derived from Wireless Tools which is licensed
+       under the GNU General Public License (GPL). Removal of copyright and license
+       notices does not remove the licensing obligations.
+
+SEE ALSO
+       iwconfig(8), hostapd(8), wpa_supplicant(8)
+
+AUTHOR
+       Original iwlist and Wireless Tools:
+           Jean Tourrilhes <jt@hpl.hp.com>
+
+       Embedded firmware integration:
+           Unknown vendor (HC1703 camera firmware)
+
+IWLIST(8)
